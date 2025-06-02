@@ -21,7 +21,8 @@
                 </div>
                 <div class="flex items-center ml-auto space-x-2 sm:space-x-3">
                     <flux:modal.trigger name="create-user">
-                        <flux:button size="sm" variant="outline" icon="user-plus" class="bg-">Create user</flux:button>
+                        <flux:button size="sm" variant="outline" icon="user-plus" class="bg-">Create user
+                        </flux:button>
                     </flux:modal.trigger>
                 </div>
             </div>
@@ -50,6 +51,13 @@
                                         <span class="ml-1">{{ $sortDirection === 'asc' ? '↑' : '↓' }}</span>
                                     @endif
                                 </th>
+                                <th scope="col" class="p-2 text-sm font-semibold text-left uppercase text-accent"
+                                    wire:click="sortBy('hobbies')">
+                                    Hobbies
+                                    @if ($sortColumn === 'hobbies')
+                                        <span class="ml-1">{{ $sortDirection === 'asc' ? '↑' : '↓' }}</span>
+                                    @endif
+                                </th>
                                 <th scope="col" class="p-2 text-sm"></th>
                             </tr>
                         </thead>
@@ -58,19 +66,32 @@
                                 <tr class="">
                                     <td class="p-2 text-base font-medium whitespace-nowrap">{{ $user->name }}</td>
                                     <td class="p-2 text-base font-normal whitespace-nowrap">{{ $user->email }}</td>
+                                    <td class="p-2 text-base font-normal whitespace-nowrap">
+                                        @if ($user->hobbies)
+                                            @foreach ($user->hobbies as $hobby)
+                                                <span class="inline-block px-2 py-1 mr-1 text-xs font-semibold text-gray-700 bg-gray-200 rounded-full">
+                                                    {{ $hobby }}
+                                                </span>
+                                            @endforeach
+                                        @else
+                                            <span class="text-gray-500">Tidak ada</span>
+                                        @endif
+                                    </td>
                                     <td class="p-2 space-x-2 whitespace-nowrap text-right">
                                         <flux:button size="sm" icon="pencil-square" iconVariant="mini"
                                             class="bg-blue-400! hover:bg-blue-500! text-white!"
                                             x-on:click="$dispatch('edit-user', { 'id': {{ $user->id }} })">
                                             Edit</flux:button>
-                                        <flux:button x-on:click="$dispatch('delete-user', { 'id': {{ $user->id }} })"
+                                        <flux:button
+                                            x-on:click="$dispatch('delete-user', { 'id': {{ $user->id }} })"
                                             size="sm" variant="danger" icon="user-minus" iconVariant="mini">
                                             Hapus</flux:button>
                                     </td>
                                 </tr>
                             @empty
                                 <tr class="border-b">
-                                    <td class="p-2 text-base font-medium text-center text-accent" colspan="3">Tidak ada data
+                                    <td class="p-2 text-base font-medium text-center text-accent" colspan="3">Tidak
+                                        ada data
                                         untuk ditampilkan</td>
                                 </tr>
                             @endforelse

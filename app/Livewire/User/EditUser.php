@@ -31,6 +31,8 @@ class EditUser extends Component
     #[Validate('same:password', message: 'Konfirmasi password tidak sesuai')]
     public ?string $password_confirmation = null;
 
+    public ?array $hobbies = null;
+
     #[On('edit-user')]
     public function edit($id)
     {
@@ -38,6 +40,9 @@ class EditUser extends Component
         $this->userId = $user->id;
         $this->name = $user->name;
         $this->email = $user->email;
+        // set hobbies if exists
+        $this->dispatch('reset-hobbies');
+        $this->dispatch('set-hobbies', hobbies: $user->hobbies ?? []);
         Flux::modal('edit-user')->show();
     }
 
@@ -62,9 +67,11 @@ class EditUser extends Component
             'name' => $this->name,
             'email' => $this->email,
             'password' => bcrypt($this->password),
+            'hobbies' => $this->hobbies,
         ]);
 
         $this->dispatch('user-updated')->to(ListUser::class);
+        $this->dispatch('reset-hobbies');
         $this->reset();
         Flux::modal('edit-user')->close();
     }

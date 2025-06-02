@@ -12,6 +12,26 @@
             <flux:input wire:model="password_confirmation" label="Confirm Password" type="password"
                 placeholder="Confirm password" />
 
+            <flux:field>
+                <flux:label>Hobbies</flux:label>
+                <x-tom-select wire:model="hobbies" class="w-full" 
+                x-init="new TomSelect($el, {
+                    plugins: ['remove_button'],
+                    valueField: 'hobbies    ',
+                    labelField: 'hobbies',
+                    searchField: 'hobbies',
+                })"
+                @set-hobbies.window="event.detail.hobbies.forEach(hobby => $el.tomselect.addItem(hobby))"
+                @reset-hobbies.window="$el.tomselect.clear()"
+                multiple>
+                    <option value="">Select hobbies</option>
+                    @foreach (\App\Helpers\HobbiesHelper::list() as $hobby)
+                        <option value="{{ $hobby }}">{{ $hobby }}</option>
+                    @endforeach
+                </x-tom-select>
+                <flux:error name="hobbies" />
+            </flux:field>
+
             <div class="flex">
                 <flux:spacer />
 

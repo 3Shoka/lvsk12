@@ -29,6 +29,10 @@ class CreateUser extends Component
     #[Validate('same:password', message: 'Konfirmasi password tidak sesuai')]
     public string $password_confirmation;
 
+    #[Validate('required', message: 'Hobi harus diisi')]
+    #[Validate('array', message: 'Hobi harus berupa array')]
+    public array $hobbies = [];
+
     public function save()
     {
         $this->validate();
@@ -37,9 +41,11 @@ class CreateUser extends Component
             'name' => $this->name,
             'email' => $this->email,
             'password' => bcrypt($this->password),
+            'hobbies' => $this->hobbies,
         ]);
 
         $this->dispatch('user-created')->to(ListUser::class);
+        $this->dispatch('reset-hobbies');
         $this->reset();
         Flux::modal('create-user')->close();
     }
