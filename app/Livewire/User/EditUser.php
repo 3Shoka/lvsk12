@@ -32,6 +32,20 @@ class EditUser extends Component
     public ?string $password_confirmation = null;
 
     public ?array $hobbies = null;
+    
+    public ?array $user_ref = null;
+
+    public function listUsers($query = null)
+    {
+        return User::query()
+            ->select(['id', 'name', 'email'])
+            ->when($query, function ($q) use ($query) {
+                $q->where('name', 'like', "%{$query}%")
+                  ->orWhere('email', 'like', "%{$query}%");
+            })
+            ->orderBy('name')
+            ->get();
+    }
 
     #[On('edit-user')]
     public function edit($id)
@@ -41,8 +55,11 @@ class EditUser extends Component
         $this->name = $user->name;
         $this->email = $user->email;
         // set hobbies if exists
-        $this->dispatch('reset-hobbies');
+        $this->dispatch('reset-tom');
         $this->dispatch('set-hobbies', hobbies: $user->hobbies ?? []);
+        $ref_selected = User::whereIn('id', $user->user_ref ?? [])
+            ->get();
+        $this->dispatch('set-user-ref', data: $ref_selected, id: $user->user_ref ?? []);
         Flux::modal('edit-user')->show();
     }
 
@@ -68,10 +85,11 @@ class EditUser extends Component
             'email' => $this->email,
             'password' => bcrypt($this->password),
             'hobbies' => $this->hobbies,
+            'user_ref' => $this->user_ref,
         ]);
 
         $this->dispatch('user-updated')->to(ListUser::class);
-        $this->dispatch('reset-hobbies');
+        $this->dispatch('reset-tom');
         $this->reset();
         Flux::modal('edit-user')->close();
     }

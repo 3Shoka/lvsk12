@@ -33,6 +33,20 @@ class CreateUser extends Component
     #[Validate('array', message: 'Hobi harus berupa array')]
     public array $hobbies = [];
 
+    public array $user_ref = [];
+
+    public function listUsers($query = null)
+    {
+        return User::query()
+            ->select(['id', 'name', 'email'])
+            ->when($query, function ($q) use ($query) {
+                $q->where('name', 'like', "%{$query}%")
+                  ->orWhere('email', 'like', "%{$query}%");
+            })
+            ->orderBy('name')
+            ->get();
+    }
+
     public function save()
     {
         $this->validate();
@@ -42,10 +56,11 @@ class CreateUser extends Component
             'email' => $this->email,
             'password' => bcrypt($this->password),
             'hobbies' => $this->hobbies,
+            'user_ref' => $this->user_ref,
         ]);
 
         $this->dispatch('user-created')->to(ListUser::class);
-        $this->dispatch('reset-hobbies');
+        $this->dispatch('reset-tom');
         $this->reset();
         Flux::modal('create-user')->close();
     }

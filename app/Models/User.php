@@ -23,6 +23,7 @@ class User extends Authenticatable
         'email',
         'password',
         'hobbies', // Added hobbies attribute
+        'user_ref', // Added user_ref attribute
     ];
 
     /**
@@ -42,6 +43,7 @@ class User extends Authenticatable
      */
     protected $casts = [
         'hobbies' => 'array', // Cast hobbies as an array
+        'user_ref' => 'array', // Cast hobbies as an array
     ];
 
     /**

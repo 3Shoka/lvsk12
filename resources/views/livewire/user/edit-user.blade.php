@@ -14,22 +14,45 @@
 
             <flux:field>
                 <flux:label>Hobbies</flux:label>
-                <x-tom-select wire:model="hobbies" class="w-full" 
-                x-init="new TomSelect($el, {
+                <x-tom-select wire:model="hobbies" class="w-full" x-init="$el.hobbies = new TomSelect($el, {
                     plugins: ['remove_button'],
                     valueField: 'hobbies    ',
                     labelField: 'hobbies',
                     searchField: 'hobbies',
                 })"
-                @set-hobbies.window="event.detail.hobbies.forEach(hobby => $el.tomselect.addItem(hobby))"
-                @reset-hobbies.window="$el.tomselect.clear()"
-                multiple>
+                    @set-hobbies.window="event.detail.hobbies.forEach(hobby => $el.tomselect.addItem(hobby))"
+                    @reset-tom.window="$el.hobbies.clear()" multiple>
                     <option value="">Select hobbies</option>
                     @foreach (\App\Helpers\HobbiesHelper::list() as $hobby)
                         <option value="{{ $hobby }}">{{ $hobby }}</option>
                     @endforeach
                 </x-tom-select>
                 <flux:error name="hobbies" />
+            </flux:field>
+
+            <flux:field>
+                <flux:label>User refs</flux:label>
+                <x-tom-select wire:model="user_ref" class="w-full" x-init="$el.user_ref = new TomSelect($el, {
+                    plugins: ['remove_button'],
+                    valueField: 'id',
+                    labelField: 'name',
+                    searchField: 'name',
+                    load: (query, callback) => {
+                        if (!query.length) return callback([]);
+                        $wire.listUsers(query).then(users => {
+                            callback(users);
+                        }).catch(error => {
+                            console.error('Error loading users:', error);
+                            callback([]);
+                        });
+                    },
+                })" 
+                @reset-tom.window="$el.user_ref.clearOptions()"
+                @set-user-ref.window="
+                    $el.user_ref.addOption(event.detail.data);
+                    $el.user_ref.setValue(event.detail.id);"
+                multiple></x-tom-select>
+                <flux:error name="user_refs" />
             </flux:field>
 
             <div class="flex">

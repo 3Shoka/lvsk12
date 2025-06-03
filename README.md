@@ -9,6 +9,11 @@
 - Add user hobby
 
 implement multiselect using tom-select js library
-TODO: add select remote data
+
+- Add user ref
+
+implement multiselect remote data
+
+- TODO: custom render select options
 
 - TODO: callout / notificatin / toast

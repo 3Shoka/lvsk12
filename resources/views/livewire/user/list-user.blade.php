@@ -58,6 +58,14 @@
                                         <span class="ml-1">{{ $sortDirection === 'asc' ? '↑' : '↓' }}</span>
                                     @endif
                                 </th>
+                                <th scope="col" class="p-2 text-sm font-semibold text-left uppercase text-accent"
+                                    wire:click="sortBy('user_ref')">
+                                    Referensi User
+                                    @if ($sortColumn === 'user_ref')
+                                        <span class="ml-1">{{ $sortDirection === 'asc' ? '↑' : '↓' }}</span>
+                                    @endif
+                                </th>
+
                                 <th scope="col" class="p-2 text-sm"></th>
                             </tr>
                         </thead>
@@ -69,8 +77,21 @@
                                     <td class="p-2 text-base font-normal whitespace-nowrap">
                                         @if ($user->hobbies)
                                             @foreach ($user->hobbies as $hobby)
-                                                <span class="inline-block px-2 py-1 mr-1 text-xs font-semibold text-gray-700 bg-gray-200 rounded-full">
+                                                <span
+                                                    class="inline-block px-2 py-1 mr-1 text-xs font-semibold text-gray-700 bg-gray-200 rounded-full">
                                                     {{ $hobby }}
+                                                </span>
+                                            @endforeach
+                                        @else
+                                            <span class="text-gray-500">Tidak ada</span>
+                                        @endif
+                                    </td>
+                                    <td class="p-2 text-base font-normal whitespace-nowrap">
+                                        @if ($user->user_ref)
+                                            @foreach ($user?->user_ref as $id)
+                                                <span
+                                                    class="inline-block px-2 py-1 mr-1 text-xs font-semibold text-gray-700 bg-gray-200 rounded-full">
+                                                    {{ App\Models\User::find($id)?->name }}
                                                 </span>
                                             @endforeach
                                         @else

@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
             $table->json('hobbies')->nullable()->after('email_verified_at');
+            $table->json('user_ref')->nullable()->after('email_verified_at');
         });
     }
 
@@ -23,6 +24,7 @@ return new class extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
             $table->dropColumn('hobbies');
+            $table->dropColumn('user_ref');
         });
     }
 };
